@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
@@ -9,6 +9,20 @@ def index():
 @app.route("/new")
 def new_method():
     return render_template("new.html")
+
+@app.route("/methods",methods=["POST"])
+def create_method():
+    name = request.form["name"]
+    description = request.form["description"]
+    category = request.form["category"]
+    memo = request.form["memo"]
+
+    return f"""
+    name: {name}<br>
+    description: {description}<br>
+    category: {category}<br>
+    memo: {memo}
+    """
 
 if __name__ == "__main__":
     app.run(debug=True)
