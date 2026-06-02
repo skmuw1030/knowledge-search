@@ -24,5 +24,19 @@ def create_method():
     memo: {memo}
     """
 
+@app.route("/list")
+def methods_list():
+    import sqlite3
+
+    con = sqlite3.connect("knowledge.db")
+    cur = con.cursor()
+
+    cur.execute("SELECT * FROM methods")
+    rows = cur.fetchall()
+
+    con.close()
+
+    return str(rows)
+
 if __name__ == "__main__":
     app.run(debug=True)
