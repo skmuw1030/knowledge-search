@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request,redirect
+import sqlite3
 
 app = Flask(__name__)
 
@@ -17,12 +18,19 @@ def create_method():
     category = request.form["category"]
     memo = request.form["memo"]
 
-    return f"""
-    name: {name}<br>
-    description: {description}<br>
-    category: {category}<br>
-    memo: {memo}
-    """
+    con = sqlite3.connect("knowledge.db")
+    cur = con.cursor()
+
+    cur.execute("""
+    INSERT INTO methods (name, description, category, memo)
+    VALUES (?, ?, ?, ?)
+    """, (name, description, category, memo))
+
+    con.commit()
+    con.close()
+
+    return redirect("/list")
+
 
 @app.route("/list")
 def methods_list():
@@ -32,11 +40,23 @@ def methods_list():
     cur = con.cursor()
 
     cur.execute("SELECT * FROM methods")
-    rows = cur.fetchall()
+    methods = cur.fetchall()
 
     con.close()
 
-    return str(rows)
+    return render_template("list.html", methods=methods)
+
+@app.route("/methods/<int:id>")
+def detail(id):
+    con = sqlite3.connect("knowledge.db")
+    cur = con.cursor()
+
+    cur.execute("SELECT * FROM methods WHERE id = ?", (id,))
+    method = cur.fetchone()
+
+    con.close()
+
+    return render_template("detail.html", method=method)
 
 if __name__ == "__main__":
     app.run(debug=True)

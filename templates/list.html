@@ -1,0 +1,23 @@
+<h2>登録したメソッド一覧</h2>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>メソッド名</th>
+        <th>説明</th>
+        <th>カテゴリー</th>
+        <th>メモ</th>
+    </tr>
+
+    {% for method in methods %}
+    <tr>
+        <td>{{ method[0] }}</td>
+        <td>
+          <a href="/methods/{{ method[0] }}">{{ method[1] }}</a>
+        </td>
+        <td>{{ method[2] }}</td>
+        <td>{{ method[3] }}</td>
+        <td>{{ method[4] }}</td>
+    </tr>
+    {% endfor %}
+</table>
